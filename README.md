@@ -1,4 +1,4 @@
-# ERP-Prod
+# Ledgix_pos
 
 > **A clean Frappe v15 ERP deployment toolkit for Ledgix SaaS — built for local development, site setup, production deployment, backups, updates, and server operations.**
 
