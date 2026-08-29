@@ -1,12 +1,12 @@
 # Local Installation Guide
 
-> **Complete local development setup guide for ERP-Prod and Ledgix SaaS on Ubuntu.**
+> **Complete local development setup guide for Ledgix POS and Ledgix SaaS on Ubuntu.**
 
 ---
 
 <div align="center">
 
-# ERP-Prod Local Setup
+# Ledgix POS Local Setup
 
 **Clone. Install. Create site. Install Ledgix SaaS. Start bench.**
 
@@ -16,7 +16,7 @@
 
 ## Overview
 
-This guide explains how to run **ERP-Prod** locally for development and testing.
+This guide explains how to run **Ledgix POS** locally for development and testing.
 
 The local setup uses:
 
@@ -89,7 +89,7 @@ The local setup uses:
 ## Repository Structure for Local Setup
 
 ```text
-ERP-Prod/
+pos/
 ├── install.sh
 ├── site_setup.sh
 ├── start.sh
@@ -110,8 +110,8 @@ The `frappe-bench/` directory is generated locally and should not be committed t
 ## Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/mshahwaiz-ali/ERP-Prod.git
-cd ERP-Prod
+git clone https://github.com/mshahwaiz-ali/pos.git
+cd pos
 ```
 
 ---
@@ -371,7 +371,7 @@ frappe-bench/apps/ledgix_saas/
 Expected bench app path:
 
 ```text
-ERP-Prod/
+pos/
 └── frappe-bench/
     └── apps/
         └── ledgix_saas/
@@ -553,7 +553,7 @@ bench start
 │ Recommended First-Time Local Setup                          │
 ├─────────────────────────────────────────────────────────────┤
 │ 1. git clone repo                                           │
-│ 2. cd ERP-Prod                                              │
+│ 2. cd pos                                              │
 │ 3. chmod +x install.sh site_setup.sh start.sh               │
 │ 4. ./install.sh                                             │
 │ 5. choose Local / Development Setup                         │

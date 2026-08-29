@@ -8,7 +8,7 @@
 
 # Ledgix SaaS
 
-**The custom Frappe app included with ERP-Prod.**
+**The custom Frappe app included with Ledgix POS.**
 
 </div>
 
@@ -16,7 +16,7 @@
 
 ## Overview
 
-`ERP-Prod` currently includes one custom Frappe app:
+`Ledgix POS` currently includes one custom Frappe app:
 
 ```text id="0wbtwq"
 ledgix_saas
@@ -108,11 +108,11 @@ apps/ledgix_saas/
 
 ---
 
-## How Ledgix SaaS Fits Into ERP-Prod
+## How Ledgix SaaS Fits Into Ledgix POS
 
 ```text id="2bxqnj"
 ┌──────────────────────────────┐
-│ ERP-Prod Repository          │
+│ Ledgix POS Repository          │
 └───────────────┬──────────────┘
                 │
                 ▼

@@ -1,5 +1,4 @@
 # Installed/generated Frappe bench. Recreated by install.sh or deploy scripts.
-frappe-bench/
 /frappe-bench/
 
 # Runtime output and logs.
@@ -45,8 +44,9 @@ apps/*/build/
 apps/*.egg-info/
 apps/*/*.egg-info/
 
-# Frappe site backups.
-frappe-bench/sites/*/private/backups/
 
 # Local generated secrets.
 .secrets/
+
+# Local Python environments
+/env

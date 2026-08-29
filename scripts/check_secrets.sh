@@ -23,6 +23,7 @@ skip_dirs = {
     ".git",
     ".agents",
     ".codex",
+    ".secrets",
     "frappe-bench",
     "logs",
     "logs/install",
@@ -35,7 +36,6 @@ skip_dirs = {
     ".pytest_cache",
     ".mypy_cache",
     ".ruff_cache",
-    "tools/cleanup/clean_erp",
 }
 skip_files = {
     "secrets.md",

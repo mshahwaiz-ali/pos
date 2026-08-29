@@ -42,7 +42,7 @@ Detected:
 - Environment: WSL2 / Native Linux
 - Architecture: x86_64
 - RAM: 16 GB
-- Repo path: /path/to/ERP-Prod
+- Repo path: /path/to/pos
 
 Choose install type:
 
@@ -542,7 +542,7 @@ preflight detects completed steps
 continues from missing step
 no duplicate work
 Final proposed architecture
-ERP-Prod/
+pos/
 ├── install.sh
 ├── site_setup.sh
 ├── start.sh

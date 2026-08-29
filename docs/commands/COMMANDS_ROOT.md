@@ -1,12 +1,12 @@
 # Commands Guide
 
-> **Useful terminal, Bench CLI, Frappe, MariaDB, Redis, Nginx, Supervisor, logs, backup, restore, and troubleshooting commands for ERP-Prod and Ledgix SaaS.**
+> **Useful terminal, Bench CLI, Frappe, MariaDB, Redis, Nginx, Supervisor, logs, backup, restore, and troubleshooting commands for Ledgix POS and Ledgix SaaS.**
 
 ---
 
 <div align="center">
 
-# ERP-Prod Commands Handbook
+# Ledgix POS Commands Handbook
 
 **Bench. Sites. Apps. Database. Redis. Nginx. Supervisor. Logs. Fixes.**
 
@@ -16,7 +16,7 @@
 
 ## Overview
 
-This file contains practical commands commonly needed while working with **ERP-Prod**, **Frappe Bench**, and **Ledgix SaaS**.
+This file contains practical commands commonly needed while working with **Ledgix POS**, **Frappe Bench**, and **Ledgix SaaS**.
 
 Use this guide for:
 
@@ -61,8 +61,8 @@ Use this guide for:
 ┌─────────────────────────────┬────────────────────────────────────┐
 │ Path                        │ Purpose                            │
 ├─────────────────────────────┼────────────────────────────────────┤
-│ ERP-Prod/                   │ Main repository                    │
-│ ERP-Prod/frappe-bench/      │ Generated Frappe bench             │
+│ pos/                   │ Main repository                    │
+│ pos/frappe-bench/      │ Generated Frappe bench             │
 │ frappe-bench/apps/          │ Installed bench apps               │
 │ frappe-bench/sites/         │ Sites folder                       │
 │ apps/ledgix_saas/         │ Source Ledgix SaaS app             │
@@ -74,13 +74,13 @@ Use this guide for:
 Go to project root:
 
 ```bash
-cd ERP-Prod
+cd pos
 ```
 
 Go to bench:
 
 ```bash
-cd ERP-Prod/frappe-bench
+cd pos/frappe-bench
 ```
 
 ---
@@ -809,7 +809,7 @@ ls sites/ledgix.local/private/backups/
 ## Production Backup Helper
 
 ```bash
-cd ERP-Prod
+cd pos
 deploy/backup.sh
 ```
 
@@ -991,7 +991,7 @@ bench build
 ## Standard Production Update
 
 ```bash
-cd ERP-Prod
+cd pos
 git pull
 deploy/deploy_update.sh
 ```
@@ -999,7 +999,7 @@ deploy/deploy_update.sh
 ## Manual Production Update
 
 ```bash
-cd ERP-Prod
+cd pos
 git pull
 cd frappe-bench
 bench --site erp.yourdomain.com maintenance-mode on
@@ -1105,7 +1105,7 @@ sudo supervisorctl status
 ┌─────────────────────────────────────────────────────────────┐
 │ Daily Local Development Flow                                │
 ├─────────────────────────────────────────────────────────────┤
-│ 1. cd ERP-Prod                                              │
+│ 1. cd pos                                              │
 │ 2. git pull                                                 │
 │ 3. cd frappe-bench                                          │
 │ 4. bench --site ledgix.local migrate                        │
@@ -1117,7 +1117,7 @@ sudo supervisorctl status
 Commands:
 
 ```bash
-cd ERP-Prod
+cd pos
 git pull
 cd frappe-bench
 bench --site ledgix.local migrate
@@ -1148,7 +1148,7 @@ bench start
 Commands:
 
 ```bash
-cd ERP-Prod
+cd pos
 deploy/backup.sh
 git pull
 cd frappe-bench

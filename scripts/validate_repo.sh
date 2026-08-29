@@ -39,7 +39,7 @@ find_repo_files() {
     -o -path "$REPO_ROOT/build" \
     -o -path "*/build" \
     -o -path "*/dist" \
-    -o -path "$REPO_ROOT/tools/cleanup/clean_erp" \) -prune \
+    \) -prune \
     -o -type f -name "$pattern" -print0
 }
 
@@ -76,7 +76,6 @@ skip = {
     "node_modules",
     "build",
     "dist",
-    "tools/cleanup/clean_erp",
 }
 files = [
     path
@@ -110,7 +109,6 @@ skip = {
     "node_modules",
     "build",
     "dist",
-    "tools/cleanup/clean_erp",
 }
 files = [
     path
@@ -149,7 +147,6 @@ skip = {
     "node_modules",
     "build",
     "dist",
-    "tools/cleanup/clean_erp",
 }
 files = [
     path

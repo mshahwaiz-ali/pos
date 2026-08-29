@@ -16,7 +16,7 @@
 
 ## Overview
 
-`ERP-Prod` is a complete setup and deployment repository for running **Ledgix SaaS** on the Frappe Framework.
+`Ledgix POS` is a complete setup and deployment repository for running **Ledgix SaaS** on the Frappe Framework.
 
 It includes scripts for:
 
@@ -37,7 +37,7 @@ The repository is designed to keep the full ERP setup process organized, repeata
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
-│                         ERP-Prod                            │
+│                         Ledgix POS                            │
 ├─────────────────────────────────────────────────────────────┤
 │ Framework      │ Frappe v15                                 │
 │ Main App       │ Ledgix SaaS                                │
@@ -169,8 +169,8 @@ apps/ledgix_saas/
 Clone the repository:
 
 ```bash
-git clone https://github.com/mshahwaiz-ali/ERP-Prod.git
-cd ERP-Prod
+git clone https://github.com/mshahwaiz-ali/pos.git
+cd pos
 ```
 
 Make scripts executable:
@@ -319,7 +319,7 @@ Production setup is intended for real server environments and may configure:
 ## Repository Structure
 
 ```text
-ERP-Prod/
+pos/
 ├── README.md
 ├── install.sh
 ├── site_setup.sh
@@ -366,7 +366,7 @@ ERP-Prod/
 
 ## Site Strategy
 
-ERP-Prod is structured around a clean Frappe bench workflow.
+Ledgix POS is structured around a clean Frappe bench workflow.
 
 ```text
 ┌───────────────────────────────┐
@@ -485,8 +485,8 @@ frappe-bench/
 Use example files as templates:
 
 ```text
-env/local.example.env
-env/production.example.env
+config/env/local.example.env
+config/env/production.example.env
 config/example.env
 ```
 
@@ -540,7 +540,7 @@ ec2
 
 ## Notes
 
-ERP-Prod is not just an app folder. It is a complete Frappe setup and deployment toolkit for Ledgix SaaS.
+Ledgix POS is not just an app folder. It is a complete Frappe setup and deployment toolkit for Ledgix SaaS.
 
 Use the local setup for development and testing. Use production deployment only on a properly prepared server.
 

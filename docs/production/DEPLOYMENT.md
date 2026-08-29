@@ -1,12 +1,12 @@
 # Production Deployment Guide
 
-> **Production server / EC2 deployment guide for ERP-Prod and Ledgix SaaS.**
+> **Production server / EC2 deployment guide for Ledgix POS and Ledgix SaaS.**
 
 ---
 
 <div align="center">
 
-# ERP-Prod Production Deployment
+# Ledgix POS Production Deployment
 
 **Server setup. Domain. SSL. Supervisor. Nginx. Backups. Updates.**
 
@@ -16,7 +16,7 @@
 
 ## Overview
 
-This guide explains how to deploy **Ledgix SaaS** using the **ERP-Prod** repository on a production server.
+This guide explains how to deploy **Ledgix SaaS** using the **Ledgix POS** repository on a production server.
 
 Production deployment is different from local development.
 
@@ -221,8 +221,8 @@ The domain should resolve to your server IP.
 ## Step 3: Clone Repository
 
 ```bash
-git clone https://github.com/mshahwaiz-ali/ERP-Prod.git
-cd ERP-Prod
+git clone https://github.com/mshahwaiz-ali/pos.git
+cd pos
 ```
 
 Make scripts executable:
@@ -436,7 +436,7 @@ sudo systemctl status redis-server
 When new changes are pushed to GitHub, update production with:
 
 ```bash
-cd ERP-Prod
+cd pos
 git pull
 ```
 
