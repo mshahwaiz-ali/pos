@@ -54,7 +54,19 @@ run_services() {
   bash "$SCRIPT_DIR/production_services_fix.sh"
 }
 
+post_build_refresh() {
+  [[ -f "$SCRIPT_DIR/post_build_refresh.sh" ]] || return 0
+  bash "$SCRIPT_DIR/post_build_refresh.sh"
+}
+
 ACTION="$(find_action "$@")"
+
+# Ledgix demo/server convention: keep the Administrator password simple unless
+# the caller explicitly supplies FRAPPE_ADMIN_PASSWORD. This can be overridden
+# at any time for a hardened client deployment.
+if [[ "$ACTION" == "site" || "$ACTION" == "full" ]]; then
+  export FRAPPE_ADMIN_PASSWORD="${FRAPPE_ADMIN_PASSWORD:-admin}"
+fi
 
 # Site creation/install/migrate can need the bench Redis cache/queue even
 # before Supervisor has been configured. Start only the missing bench Redis
@@ -63,6 +75,15 @@ if [[ "$ACTION" == "site" ]]; then
   trap stop_temp_redis EXIT
   start_temp_redis
   run_ec2 "$@"
+  exit $?
+fi
+
+# App builds can produce new hashed Frappe assets. If production processes are
+# already running, refresh caches and restart web/workers so rendered HTML does
+# not keep referencing stale asset hashes.
+if [[ "$ACTION" == "apps" ]]; then
+  run_ec2 "$@"
+  post_build_refresh
   exit $?
 fi
 
@@ -92,6 +113,7 @@ if [[ "$ACTION" == "full" ]]; then
   run_ec2 "${base[@]}" --action packages
   run_ec2 "${base[@]}" --action bench
   run_ec2 "${base[@]}" --action apps
+  post_build_refresh
 
   trap stop_temp_redis EXIT
   start_temp_redis
