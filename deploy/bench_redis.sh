@@ -25,7 +25,11 @@ port_open() {
 }
 
 start_one() {
-  local name="$1" conf="$2" pidfile="$RUNNER_DIR/temp_${name}.pid" port pid
+  local name conf pidfile port pid
+  name="$1"
+  conf="$2"
+  pidfile="$RUNNER_DIR/temp_${name}.pid"
+
   [[ -f "$conf" ]] || { warn "missing Redis config: $conf"; return 1; }
   port="$(port_from_conf "$conf")"
   [[ -n "$port" ]] || { warn "could not read Redis port from $conf"; return 1; }
@@ -56,7 +60,10 @@ start_one() {
 }
 
 stop_one() {
-  local name="$1" pidfile="$RUNNER_DIR/temp_${name}.pid" pid
+  local name pidfile pid
+  name="$1"
+  pidfile="$RUNNER_DIR/temp_${name}.pid"
+
   [[ -f "$pidfile" ]] || return 0
   pid="$(cat "$pidfile" 2>/dev/null || true)"
   if [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null; then
@@ -71,10 +78,17 @@ stop_one() {
 }
 
 status_one() {
-  local name="$1" conf="$2" port
+  local name conf port
+  name="$1"
+  conf="$2"
+
   [[ -f "$conf" ]] || { printf '%s: config missing\n' "$name"; return 0; }
   port="$(port_from_conf "$conf")"
-  if port_open "$port"; then printf '%s: reachable on %s\n' "$name" "$port"; else printf '%s: stopped on %s\n' "$name" "$port"; fi
+  if port_open "$port"; then
+    printf '%s: reachable on %s\n' "$name" "$port"
+  else
+    printf '%s: stopped on %s\n' "$name" "$port"
+  fi
 }
 
 CACHE_CONF="$BENCH_DIR/config/redis_cache.conf"
