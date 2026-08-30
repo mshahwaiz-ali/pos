@@ -26,6 +26,7 @@ else
   SUDO=(sudo -n)
 fi
 
+export PATH="$HOME/.local/bin:$PATH"
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 NODE_MAJOR="${NODE_MAJOR:-22}"
 if [[ -s "$NVM_DIR/nvm.sh" ]]; then
@@ -35,8 +36,17 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
 fi
 
 NODE_BIN="$(command -v node 2>/dev/null || true)"
+BENCH_BIN="$(command -v bench 2>/dev/null || true)"
 [[ -x "$NODE_BIN" ]] || die 'node executable not found; load/install Node before production services'
+[[ -x "$BENCH_BIN" ]] || die 'bench executable not found in PATH'
 NODE_DIR="$(dirname "$NODE_BIN")"
+
+[[ -d "$BENCH_DIR/apps/frappe" && -d "$BENCH_DIR/sites" ]] || die "invalid bench: $BENCH_DIR"
+
+info 'generating fresh Bench Supervisor configuration'
+(cd "$BENCH_DIR" && "$BENCH_BIN" setup supervisor)
+info 'generating fresh Bench Nginx configuration'
+(cd "$BENCH_DIR" && "$BENCH_BIN" setup nginx)
 
 [[ -f "$SUPERVISOR_CONF" ]] || die "missing Supervisor config: $SUPERVISOR_CONF"
 [[ -f "$NGINX_CONF" ]] || die "missing Nginx config: $NGINX_CONF"
@@ -67,7 +77,6 @@ for i, line in enumerate(lines):
 if section_start is None:
     raise SystemExit("node-socketio Supervisor program not found")
 
-# Remove an older environment line from this program so reruns stay idempotent.
 body = [
     line for line in lines[section_start + 1:section_end]
     if not line.startswith("environment=")
@@ -97,9 +106,6 @@ import sys
 
 path = Path(sys.argv[1])
 text = path.read_text()
-# Frappe/Bench-generated configs can reference a custom `main` format that is
-# not defined by Ubuntu's stock nginx.conf. `combined` is a standard Nginx log
-# format and preserves normal access logging.
 text = re.sub(
     r'(?m)^(\s*access_log\s+[^;\s]+)\s+main;(\s*)$',
     r'\1 combined;\2',
@@ -112,7 +118,6 @@ info 'installing generated production configs'
 "${SUDO[@]}" ln -sfn "$SUPERVISOR_CONF" /etc/supervisor/conf.d/frappe-bench.conf
 "${SUDO[@]}" ln -sfn "$NGINX_CONF" /etc/nginx/conf.d/frappe-bench.conf
 
-# Ubuntu's default server can conflict with the Bench server on port 80.
 if [[ -e /etc/nginx/sites-enabled/default ]]; then
   "${SUDO[@]}" mv /etc/nginx/sites-enabled/default "/etc/nginx/sites-enabled/default.disabled-ledgix"
 fi
@@ -127,7 +132,6 @@ info 'reloading Supervisor configuration'
 "${SUDO[@]}" supervisorctl reread
 "${SUDO[@]}" supervisorctl update
 
-# Restart all Bench groups so the Socket.IO process gets the patched PATH.
 mapfile -t groups < <("${SUDO[@]}" supervisorctl status 2>/dev/null \
   | awk '/^frappe-bench-/{split($1,a,":"); print a[1]}' | sort -u)
 [[ "${#groups[@]}" -gt 0 ]] || die 'no frappe-bench Supervisor groups found'
