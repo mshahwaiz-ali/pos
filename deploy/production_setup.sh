@@ -21,6 +21,76 @@ if [[ -f "$SCRIPT_DIR/repair_apps_txt.sh" ]]; then
   bash "$SCRIPT_DIR/repair_apps_txt.sh"
 fi
 
+find_action() {
+  local args=("$@") i
+  for ((i = 0; i < ${#args[@]}; i++)); do
+    if [[ "${args[$i]}" == "--action" && $((i + 1)) -lt ${#args[@]} ]]; then
+      printf '%s\n' "${args[$((i + 1))]}"
+      return 0
+    fi
+  done
+  printf '\n'
+}
+
+run_ec2() {
+  bash "$SCRIPT_DIR/ec2_setup.sh" "$@"
+}
+
+start_temp_redis() {
+  [[ -f "$SCRIPT_DIR/bench_redis.sh" ]] || return 0
+  bash "$SCRIPT_DIR/bench_redis.sh" start
+}
+
+stop_temp_redis() {
+  [[ -f "$SCRIPT_DIR/bench_redis.sh" ]] || return 0
+  bash "$SCRIPT_DIR/bench_redis.sh" stop || true
+}
+
+ACTION="$(find_action "$@")"
+
+# Site creation/install/migrate can need the bench Redis cache/queue even
+# before Supervisor has been configured. Start only the missing bench Redis
+# instances temporarily and stop only the processes that this helper started.
+if [[ "$ACTION" == "site" ]]; then
+  trap stop_temp_redis EXIT
+  start_temp_redis
+  run_ec2 "$@"
+  exit $?
+fi
+
+# Keep the one-command full flow safe as well: run the phases in order, with
+# temporary bench Redis only around site creation. This avoids a later port
+# conflict when Supervisor takes ownership of the Redis processes.
+if [[ "$ACTION" == "full" ]]; then
+  original=("$@")
+  base=()
+  for ((i = 0; i < ${#original[@]}; i++)); do
+    if [[ "${original[$i]}" == "--action" && $((i + 1)) -lt ${#original[@]} && "${original[$((i + 1))]}" == "full" ]]; then
+      i=$((i + 1))
+      continue
+    fi
+    base+=("${original[$i]}")
+  done
+
+  run_ec2 "${base[@]}" --action preflight
+  run_ec2 "${base[@]}" --action packages
+  run_ec2 "${base[@]}" --action bench
+  run_ec2 "${base[@]}" --action apps
+
+  trap stop_temp_redis EXIT
+  start_temp_redis
+  run_ec2 "${base[@]}" --action site
+  stop_temp_redis
+  trap - EXIT
+
+  run_ec2 "${base[@]}" --action services
+  if [[ -n "${PRODUCTION_DOMAIN:-}" && -n "${LETSENCRYPT_EMAIL:-}" ]]; then
+    run_ec2 "${base[@]}" --action ssl
+  fi
+  run_ec2 "${base[@]}" --action status
+  exit 0
+fi
+
 # Invoke through bash so the helper itself does not need a tracked executable
 # bit. This keeps EC2 clones clean even when files were created via GitHub API.
 exec bash "$SCRIPT_DIR/ec2_setup.sh" "$@"
