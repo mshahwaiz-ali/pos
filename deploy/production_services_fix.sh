@@ -43,6 +43,16 @@ NODE_DIR="$(dirname "$NODE_BIN")"
 
 [[ -d "$BENCH_DIR/apps/frappe" && -d "$BENCH_DIR/sites" ]] || die "invalid bench: $BENCH_DIR"
 
+# `bench setup supervisor/nginx` prompts before overwriting an existing file.
+# These are generated artifacts, so keep one recovery copy and remove the live
+# generated file before regeneration to keep production deployment unattended.
+for generated in "$SUPERVISOR_CONF" "$NGINX_CONF"; do
+  if [[ -f "$generated" ]]; then
+    cp -f "$generated" "$generated.previous"
+    rm -f "$generated"
+  fi
+done
+
 info 'generating fresh Bench Supervisor configuration'
 (cd "$BENCH_DIR" && "$BENCH_BIN" setup supervisor)
 info 'generating fresh Bench Nginx configuration'
