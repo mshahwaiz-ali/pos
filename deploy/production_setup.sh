@@ -47,20 +47,10 @@ stop_temp_redis() {
 }
 
 run_services() {
-  local rc=0
-
-  # Let the normal Bench setup generate its current Supervisor/Nginx configs.
-  # On Ubuntu + nvm it may fail at Socket.IO or nginx validation before the
-  # compatibility repair is applied, so capture that result rather than
-  # aborting the wrapper immediately.
-  if run_ec2 "$@"; then
-    rc=0
-  else
-    rc=$?
-    printf '[WARN] initial Bench services setup returned %s; applying production compatibility repair\n' "$rc" >&2
-  fi
-
-  [[ -f "$SCRIPT_DIR/production_services_fix.sh" ]] || return "$rc"
+  [[ -f "$SCRIPT_DIR/production_services_fix.sh" ]] || {
+    printf '[ERROR] missing production services helper: %s\n' "$SCRIPT_DIR/production_services_fix.sh" >&2
+    return 1
+  }
   bash "$SCRIPT_DIR/production_services_fix.sh"
 }
 
@@ -76,11 +66,11 @@ if [[ "$ACTION" == "site" ]]; then
   exit $?
 fi
 
-# Production services need two EC2 compatibility repairs after Bench generates
-# its configs: an explicit nvm Node PATH for Socket.IO and a stock-Ubuntu Nginx
-# access-log format. The repair also validates automatic boot startup.
+# Production services are generated, patched, installed and validated in one
+# pass. This adds the nvm Node PATH for Socket.IO, normalizes the Ubuntu Nginx
+# access-log format, and verifies automatic boot startup.
 if [[ "$ACTION" == "services" ]]; then
-  run_services "$@"
+  run_services
   exit $?
 fi
 
@@ -109,7 +99,7 @@ if [[ "$ACTION" == "full" ]]; then
   stop_temp_redis
   trap - EXIT
 
-  run_services "${base[@]}" --action services
+  run_services
   if [[ -n "${PRODUCTION_DOMAIN:-}" && -n "${LETSENCRYPT_EMAIL:-}" ]]; then
     run_ec2 "${base[@]}" --action ssl
   fi
