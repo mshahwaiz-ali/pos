@@ -46,6 +46,24 @@ stop_temp_redis() {
   bash "$SCRIPT_DIR/bench_redis.sh" stop || true
 }
 
+run_services() {
+  local rc=0
+
+  # Let the normal Bench setup generate its current Supervisor/Nginx configs.
+  # On Ubuntu + nvm it may fail at Socket.IO or nginx validation before the
+  # compatibility repair is applied, so capture that result rather than
+  # aborting the wrapper immediately.
+  if run_ec2 "$@"; then
+    rc=0
+  else
+    rc=$?
+    printf '[WARN] initial Bench services setup returned %s; applying production compatibility repair\n' "$rc" >&2
+  fi
+
+  [[ -f "$SCRIPT_DIR/production_services_fix.sh" ]] || return "$rc"
+  bash "$SCRIPT_DIR/production_services_fix.sh"
+}
+
 ACTION="$(find_action "$@")"
 
 # Site creation/install/migrate can need the bench Redis cache/queue even
@@ -55,6 +73,14 @@ if [[ "$ACTION" == "site" ]]; then
   trap stop_temp_redis EXIT
   start_temp_redis
   run_ec2 "$@"
+  exit $?
+fi
+
+# Production services need two EC2 compatibility repairs after Bench generates
+# its configs: an explicit nvm Node PATH for Socket.IO and a stock-Ubuntu Nginx
+# access-log format. The repair also validates automatic boot startup.
+if [[ "$ACTION" == "services" ]]; then
+  run_services "$@"
   exit $?
 fi
 
@@ -83,7 +109,7 @@ if [[ "$ACTION" == "full" ]]; then
   stop_temp_redis
   trap - EXIT
 
-  run_ec2 "${base[@]}" --action services
+  run_services "${base[@]}" --action services
   if [[ -n "${PRODUCTION_DOMAIN:-}" && -n "${LETSENCRYPT_EMAIL:-}" ]]; then
     run_ec2 "${base[@]}" --action ssl
   fi
