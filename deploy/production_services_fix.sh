@@ -118,9 +118,25 @@ info 'installing generated production configs'
 "${SUDO[@]}" ln -sfn "$SUPERVISOR_CONF" /etc/supervisor/conf.d/frappe-bench.conf
 "${SUDO[@]}" ln -sfn "$NGINX_CONF" /etc/nginx/conf.d/frappe-bench.conf
 
-if [[ -e /etc/nginx/sites-enabled/default ]]; then
-  "${SUDO[@]}" mv /etc/nginx/sites-enabled/default "/etc/nginx/sites-enabled/default.disabled-ledgix"
-fi
+# Ubuntu loads every path under sites-enabled/*, regardless of file suffix.
+# Renaming `default` inside that directory therefore does NOT disable it.
+# Move all current/stale default variants completely outside active include
+# directories while keeping them available for recovery.
+info 'disabling Ubuntu default Nginx site'
+DISABLED_NGINX_DIR="/etc/nginx/ledgix-disabled"
+"${SUDO[@]}" mkdir -p "$DISABLED_NGINX_DIR"
+shopt -s nullglob
+for path in /etc/nginx/sites-enabled/default*; do
+  [[ -e "$path" || -L "$path" ]] || continue
+  info "moving inactive default config out of sites-enabled: $path"
+  "${SUDO[@]}" mv -f "$path" "$DISABLED_NGINX_DIR/$(basename "$path")"
+done
+for path in /etc/nginx/conf.d/default.conf; do
+  [[ -e "$path" || -L "$path" ]] || continue
+  info "moving inactive default config out of conf.d: $path"
+  "${SUDO[@]}" mv -f "$path" "$DISABLED_NGINX_DIR/$(basename "$path")"
+done
+shopt -u nullglob
 
 info 'enabling production services for EC2 reboot/start'
 for svc in mariadb nginx supervisor; do
