@@ -1,8 +1,6 @@
 [project]
 name = "ledgix_saas"
-authors = [
-    { name = "Ali", email = "alishahwaiz96@gmail.com" }
-]
+authors = [{ name = "Ali", email = "alishahwaiz96@gmail.com" }]
 description = "POS and inventory platform for retail shops"
 requires-python = ">=3.10"
 dynamic = ["version"]
@@ -18,6 +16,7 @@ packages = [
     "ledgix_saas.api",
     "ledgix_saas.config",
     "ledgix_saas.setup",
+    "ledgix_saas.services",
     "ledgix_saas.templates",
     "ledgix_saas.templates.pages",
     "ledgix_saas.patches",
@@ -30,10 +29,7 @@ packages = [
     "ledgix.doctype",
     "ledgix.page.ledgix_tax_center",
     "ledgix.page.ledgix_pos",
-    "ledgix.page.ledgix_dashboard",
-    "ledgix.page.quick_item_scan",
-    "ledgix.page.ledgix_operations",
-    "ledgix.page.ledgix_reports",
+    "ledgix.page.business_intelligence_center",
     "ledgix.report.ledgix_sales_report",
     "ledgix.report.ledgix_item_full_cycle",
     "ledgix.report.ledgix_sales_return_report",
@@ -42,11 +38,10 @@ packages = [
     "ledgix.report.ledgix_customer_statement",
     "ledgix.report.inventory_intelligence_report",
     "ledgix.print_format.ledgix_thermal_receipt",
-    "ledgix.doctype.ledgix_maintenance_tool",
+    "ledgix.print_format.ledgix_b2b_invoice",
     "ledgix.doctype.ledgix_item",
     "ledgix.doctype.ledgix_pos_shift",
     "ledgix.doctype.ledgix_return_tax_detail",
-    "ledgix.doctype.ledgix_mode_settings",
     "ledgix.doctype.ledgix_tax_rate",
     "ledgix.doctype.ledgix_user_profile",
     "ledgix.doctype.ledgix_sales_return_item",
@@ -61,7 +56,6 @@ packages = [
     "ledgix.doctype.ledgix_item_tax_profile",
     "ledgix.doctype.ledgix_supplier",
     "ledgix.doctype.ledgix_stock_lot_allocation",
-    "ledgix.doctype.ledgix_pos_theme_settings",
     "ledgix.doctype.ledgix_pos_hold",
     "ledgix.doctype.ledgix_sale_item",
     "ledgix.doctype.ledgix_customer",
@@ -74,6 +68,11 @@ packages = [
     "ledgix.doctype.ledgix_fbr_submission_log",
     "ledgix.doctype.ledgix_stock_movement",
     "ledgix.doctype.ledgix_purchase_item",
+    "ledgix.doctype.ledgix_price_list",
+    "ledgix.doctype.ledgix_item_price",
+    "ledgix.doctype.ledgix_payment_method",
+    "ledgix.doctype.ledgix_payment",
+    "ledgix.doctype.ledgix_payment_allocation",
 ]
 
 [tool.setuptools.package-dir]
@@ -81,6 +80,7 @@ packages = [
 "ledgix_saas.api" = "api"
 "ledgix_saas.config" = "config"
 "ledgix_saas.setup" = "setup"
+"ledgix_saas.services" = "services"
 "ledgix_saas.templates" = "templates"
 "ledgix_saas.templates.pages" = "templates/pages"
 "ledgix_saas.patches" = "patches"

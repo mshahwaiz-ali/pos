@@ -1,4 +1,4 @@
-/* Login + desk brand polish */
+/* Login + native Frappe desk brand polish only. */
 body.website-login .app-logo {
 	width: auto;
 	max-width: 220px;
@@ -17,26 +17,57 @@ body.website-login .page-card-head h4 {
 	object-fit: contain;
 }
 
-.ledgix-nav-mark-image {
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
-	display: block;
-	padding: 4px;
-	box-sizing: border-box;
+.navbar-brand img.lx-brand-image,
+.navbar-home img.lx-brand-image {
+	width: 28px;
+	height: 28px;
 }
 
-.ledgix-nav-mark.is-image-mark {
-	background: #ffffff;
-	border: 1px solid rgba(140, 32, 49, 0.12);
-	box-shadow: 0 10px 22px rgba(140, 32, 49, 0.14);
-}
-
-.ledgix-app-shell.is-collapsed .ledgix-nav-mark.is-image-mark {
-	padding: 0;
+.navbar-brand .lx-brand-fallback,
+.navbar-home .lx-brand-fallback {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 5px;
+	background: var(--lx-v2-primary, #8C2031);
+	color: var(--lx-v2-primary-contrast, #fff);
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: -0.02em;
 }
 
 .centered.splash .ledgix-splash-logo {
 	width: auto;
 	height: auto;
+}
+
+/* Brand only Ledgix-owned workflow surfaces. Native Frappe forms/lists keep
+   their standard visual language while POS and custom centers use the business
+   accent selected in Ledgix Brand Settings. */
+#page-ledgix-pos .lx-pos-v2 .btn-primary,
+#page-ledgix-tax-center .lx-tax-v2 .btn-primary,
+#page-business-intelligence-center .lx-ii-v2 .btn-primary {
+	background-color: var(--lx-v2-primary, #8C2031) !important;
+	border-color: var(--lx-v2-primary, #8C2031) !important;
+	color: var(--lx-v2-primary-contrast, #fff) !important;
+}
+
+#page-ledgix-pos .lx-pos-v2 .btn-primary:hover,
+#page-ledgix-tax-center .lx-tax-v2 .btn-primary:hover,
+#page-business-intelligence-center .lx-ii-v2 .btn-primary:hover {
+	background-color: color-mix(in srgb, var(--lx-v2-primary, #8C2031) 88%, #000) !important;
+	border-color: color-mix(in srgb, var(--lx-v2-primary, #8C2031) 88%, #000) !important;
+}
+
+#page-ledgix-pos .lx-pos-v2 .btn-primary:focus,
+#page-ledgix-tax-center .lx-tax-v2 .btn-primary:focus,
+#page-business-intelligence-center .lx-ii-v2 .btn-primary:focus {
+	box-shadow: 0 0 0 2px color-mix(in srgb, var(--lx-v2-primary, #8C2031) 18%, transparent) !important;
+}
+
+#page-ledgix-tax-center .lx-tax-v2 {
+	--lx-primary: var(--lx-v2-primary, #8C2031);
 }
