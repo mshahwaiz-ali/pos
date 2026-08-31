@@ -59,6 +59,22 @@ post_build_refresh() {
   bash "$SCRIPT_DIR/post_build_refresh.sh"
 }
 
+run_safe_backup() {
+  [[ -f "$SCRIPT_DIR/backup_safe.sh" ]] || {
+    printf '[ERROR] missing backup helper: %s\n' "$SCRIPT_DIR/backup_safe.sh" >&2
+    return 1
+  }
+  bash "$SCRIPT_DIR/backup_safe.sh"
+}
+
+run_safe_deploy_update() {
+  [[ -f "$SCRIPT_DIR/deploy_update_safe.sh" ]] || {
+    printf '[ERROR] missing deploy update helper: %s\n' "$SCRIPT_DIR/deploy_update_safe.sh" >&2
+    return 1
+  }
+  bash "$SCRIPT_DIR/deploy_update_safe.sh"
+}
+
 ACTION="$(find_action "$@")"
 
 # Ledgix demo/server convention: keep the Administrator password simple unless
@@ -66,6 +82,21 @@ ACTION="$(find_action "$@")"
 # at any time for a hardened client deployment.
 if [[ "$ACTION" == "site" || "$ACTION" == "full" ]]; then
   export FRAPPE_ADMIN_PASSWORD="${FRAPPE_ADMIN_PASSWORD:-admin}"
+fi
+
+# Route site backup directly by explicit site name. This avoids Bash nameref
+# edge cases with dotted Frappe site names such as ledgix.local.
+if [[ "$ACTION" == "backup" ]]; then
+  run_safe_backup
+  exit $?
+fi
+
+# Production updates need an exact app mirror because V2 intentionally deletes
+# legacy pages/assets. A plain cp-over-existing-tree would leave removed files
+# behind, so deploy-update uses the dedicated exact-sync helper.
+if [[ "$ACTION" == "deploy-update" ]]; then
+  run_safe_deploy_update
+  exit $?
 fi
 
 # Site creation/install/migrate can need the bench Redis cache/queue even
